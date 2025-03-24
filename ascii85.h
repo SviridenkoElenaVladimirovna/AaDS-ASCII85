@@ -9,4 +9,4 @@ public:
     static void decode(std::istream& input, std::ostream& output);
 };
 
-#endif 
+#endif

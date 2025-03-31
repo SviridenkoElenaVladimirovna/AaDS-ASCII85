@@ -24,7 +24,7 @@ class TestASCII85Exec(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         if not os.path.exists(ASCII85_EXEC_PATH):
-            raise FileNotFoundError(f"Исполнимый файл {ASCII85_EXEC_PATH} не найден. Пожалуйста, выполните make для сборки.")
+            raise FileNotFoundError(f"Executable file {ASCII85_EXEC_PATH} not found. Please run make to build.")
             
 def test_encoding(self):
     test_cases = ["Hello", "Разработка", "98765", "Hello, World!", "&*()_+="]

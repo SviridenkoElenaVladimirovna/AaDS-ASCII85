@@ -1,6 +1,7 @@
 #include "ascii85.h"
 #include <iostream>
 #include <string>
+#include <sstream>
 
 void print_usage(const std::string& prog_name) {
     std::cerr << "Usage: " << prog_name << " [-e | -d]" << std::endl;
@@ -21,8 +22,16 @@ int main(int argc, char* argv[]) {
     try {
         if (mode == "-e" || mode == "") {
             ascii85::encode(std::cin, std::cout);
+            return 0;
         } else if (mode == "-d") {
-            ascii85::decode(std::cin, std::cout);
+            std::stringstream error_stream;
+            if (!ascii85::decode(std::cin, std::cout, error_stream)) {
+                if (!error_stream.str().empty()) {
+                    std::cerr << error_stream.str() << std::endl;
+                }
+                return 1;
+            }
+            return 0;
         } else {
             print_usage(argv[0]);
             return 1;
@@ -31,6 +40,4 @@ int main(int argc, char* argv[]) {
         std::cerr << "Error: " << e.what() << std::endl;
         return 1;
     }
-
-    return 0;
 }

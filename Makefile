@@ -42,6 +42,9 @@ $(TESTPROJECT): $(LIBPROJECT) $(TEST-OBJ)
 
 test: $(TESTPROJECT)
 
+test-python:
+	python3 -m unittest testspy.py
+
 all: $(PROJECT)
 
 .PHONY: clean

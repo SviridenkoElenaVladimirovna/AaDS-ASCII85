@@ -3,12 +3,12 @@ name: CI
 on:
   push:
     branches:
-      - main
       - dev
       - python-tests
   pull_request:
     branches:
-      - main
+      - dev
+      - python-tests
 
 jobs:
   build:

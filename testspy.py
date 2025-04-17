@@ -60,5 +60,20 @@ def test_decoding_negative(self):
                 f"Unexpected error message for input '{test_failure}': {result['content']}"
             )
 
+def test_decoding_invalid_random(self):
+        for _ in range(5): 
+            invalid_string = generate_random_string(random.randint(5, 20))
+            invalid_string = invalid_string + "~" 
+            with self.subTest(text=invalid_string):
+                result = decode_from_ascii85_with_exec(invalid_string)
+                self.assertEqual(result["code"], 1)
+                self.assertNotEqual(result["content"], "")
+                expected_errors = ["Invalid", "Error"]
+                self.assertTrue(
+                    any(err in result["content"] for err in expected_errors),
+                    f"Unexpected error message for input '{invalid_string}': {result['content']}"
+                )
+
+
 if __name__ == '__main__':
     unittest.main()

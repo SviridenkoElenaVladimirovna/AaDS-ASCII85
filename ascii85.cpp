@@ -33,45 +33,35 @@ void ascii85::encode(std::istream& input, std::ostream& output) {
 bool ascii85::decode(std::istream& input, std::ostream& output, std::ostream& error) {
     std::vector<char> buffer;
     char ch;
-    bool has_data = false;
+    bool hasData = false;
 
     while (input.get(ch)) {
-        if (ch == ' ' || ch == '\n' || ch == '\r' || ch == '\t') {
+        if (ch == ' ' || ch == '\n' || ch == '\t' || ch == '\r') {
             continue;
-        }
-
-        has_data = true;
-
-        if (ch == '~') {
-            if (!input.get(ch) || ch != '>') {
-                error << "Invalid ASCII85 termination";
-                error.flush();
-                return false;
-            }
-            break;
         }
 
         if (ch == 'z') {
             if (!buffer.empty()) {
                 error << "Invalid 'z' in middle of block";
-                error.flush();
                 return false;
             }
             output.write("\0\0\0\0", 4);
+            hasData = true;
             continue;
         }
 
         if (ch < '!' || ch > 'u') {
-            error << "Invalid character in ASCII85 encoding";
-            error.flush();
+            error << "Invalid character in ASCII85 encoding: " << ch;
             return false;
         }
 
         buffer.push_back(ch);
+        hasData = true;
+
         if (buffer.size() == 5) {
             uint32_t value = 0;
-            for (int i = 0; i < 5; ++i) {
-                value = value * 85 + (buffer[i] - '!');
+            for (char c : buffer) {
+                value = value * 85 + (c - '!');
             }
             output.put((value >> 24) & 0xFF);
             output.put((value >> 16) & 0xFF);
@@ -81,33 +71,30 @@ bool ascii85::decode(std::istream& input, std::ostream& output, std::ostream& er
         }
     }
 
-    if (!has_data) {
-        error << "Empty input";
-        error.flush();
-        return false;
+    if (!hasData) {
+        return true;
     }
 
     if (!buffer.empty()) {
         if (buffer.size() == 1) {
             error << "Incomplete ASCII85 block";
-            error.flush();
             return false;
         }
 
-        size_t bytesToOutput = buffer.size() - 1;
+        size_t bytesToWrite = buffer.size() - 1;
         while (buffer.size() < 5) {
             buffer.push_back('u');
         }
 
         uint32_t value = 0;
-        for (int i = 0; i < 5; ++i) {
-            value = value * 85 + (buffer[i] - '!');
+        for (char c : buffer) {
+            value = value * 85 + (c - '!');
         }
 
-        if (bytesToOutput > 0) output.put((value >> 24) & 0xFF);
-        if (bytesToOutput > 1) output.put((value >> 16) & 0xFF);
-        if (bytesToOutput > 2) output.put((value >> 8) & 0xFF);
-        if (bytesToOutput > 3) output.put(value & 0xFF);
+        if (bytesToWrite >= 1) output.put((value >> 24) & 0xFF);
+        if (bytesToWrite >= 2) output.put((value >> 16) & 0xFF);
+        if (bytesToWrite >= 3) output.put((value >> 8) & 0xFF);
+        if (bytesToWrite >= 4) output.put(value & 0xFF);
     }
 
     return true;

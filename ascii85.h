@@ -6,7 +6,7 @@
 class ascii85 {
 public:
     static void encode(std::istream& input, std::ostream& output);
-    static void decode(std::istream& input, std::ostream& output);
+    static bool decode(std::istream& input, std::ostream& output, std::ostream& error);
 };
 
-#endif 
+#endif

@@ -5,7 +5,10 @@
 
 main.o
 ascii85.o
-
+ascii85
+ascii85.a
+test-ascii85
+__pycache__
 
 # User-specific files
 *.rsuser

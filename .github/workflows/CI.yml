@@ -38,11 +38,14 @@ jobs:
         sudo apt-get install -y g++ make libgtest-dev libgmock-dev python3 python3-pip
         pip3 install --upgrade pip
 
-    - name: Build C++ Tests
-      run: make test
+    - name: Build ASCII85 executable
+      run: make  
 
+    - name: Build C++ Tests
+      run: make test  
+      
     - name: Run C++ Tests
-      run: ./test-ascii85
+      run: ./test-ascii85 
 
     - name: Run Python Tests
-      run: make test-python
+      run: make test-python 

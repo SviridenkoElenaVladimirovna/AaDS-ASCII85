@@ -5,7 +5,8 @@
 
 main.o
 ascii85.o
-
+ascii85
+ascii85.a
 
 # User-specific files
 *.rsuser
